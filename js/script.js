@@ -12,6 +12,18 @@ var SPECS_PRACTICE = {
   3: [["vowel", 2], ["cons", 2], ["mixed", 2]]
 };
 
+// Test specs
+// var SPECS_MAIN = {
+//   1: [["pi", 2], ["ni", 1], ["ra", 1]],
+//   2: [["pi", 1], ["ni", 1], ["ra", 2]],
+//   3: [["vowel", 1], ["cons", 1], ["mixed", 2]]
+// };
+// var SPECS_PRACTICE = {
+//   1: [["pi", 1], ["ni", 1], ["ra", 1]],
+//   2: [["pi", 1], ["ni", 1], ["ra", 1]],
+//   3: [["vowel", 1], ["cons", 1], ["mixed", 1]]
+// };
+
 function makeTrials(level, practice) {
   var specs = practice ? SPECS_PRACTICE[level] : SPECS_MAIN[level];
   var list = [];
@@ -41,6 +53,7 @@ var S = {
   participantId: "",
   age: "",
   levelIdx: 0,
+  levelOrder: [],
   phase: "welcome",   // welcome | instr | ready | fixation | trial | feedback | between | done
   isPractice: false,
   trials: [],
@@ -66,7 +79,7 @@ var barFill = document.getElementById("barFill");
 var btnSame = document.getElementById("btnSame");
 var btnDiff = document.getElementById("btnDiff");
 
-function currentLevel() { return CONFIG.levels[S.levelIdx]; }
+function currentLevel() { return S.levelOrder[S.levelIdx]; }
 
 /* ---------- Screen navigation ---------- */
 function fireAdvance() { var f = advance; advance = null; if (f) f(); }
@@ -219,58 +232,7 @@ function meanAndErr(rows) {
 }
 
 function fmt(v, suffix) {
-  return v === null ? "\u2014" : v + (suffix || "");
-}
-
-function showEnd() {
-  S.phase = "done";
-  var main = S.allData.filter(function (r) { return r.phase === "main"; });
-  var lv = function (n, f) {
-    return main.filter(function (r) { return r.level === n && f(r); });
-  };
-  var sameExp = function (r) { return r.expected === "same"; };
-  var diffExp = function (r) { return r.expected === "diff"; };
-
-  var rows = [
-    ["1", "SAME \u2013 physical identity (AA)", meanAndErr(lv(1, sameExp))],
-    ["1", "DIFFERENT (other pairs)", meanAndErr(lv(1, diffExp))],
-    ["2", "SAME \u2013 physical (AA)", meanAndErr(lv(2, function (r) { return sameExp(r) && r.trial_type === "PI"; }))],
-    ["2", "SAME \u2013 name (Aa)", meanAndErr(lv(2, function (r) { return sameExp(r) && r.trial_type === "NI"; }))],
-    ["2", "DIFFERENT (different names)", meanAndErr(lv(2, diffExp))],
-    ["3", "SAME \u2013 rule (vowels or consonants)", meanAndErr(lv(3, sameExp))],
-    ["3", "DIFFERENT (vowel + consonant)", meanAndErr(lv(3, diffExp))]
-  ];
-  var trs = rows.map(function (r) {
-    return "<tr><td>N" + r[0] + "</td><td>" + r[1] + "</td><td>" + fmt(r[2].rt, " ms") + "</td><td>" + fmt(r[2].err, " %") + "</td></tr>";
-  }).join("");
-
-  // Estimate the name-identity processing time (node 2 - node 1, SAME-SAME method)
-  var pi = meanAndErr(lv(2, function (r) { return sameExp(r) && r.trial_type === "PI"; })).rt;
-  var ni = meanAndErr(lv(2, function (r) { return sameExp(r) && r.trial_type === "NI"; })).rt;
-  var estimate = (pi !== null && ni !== null)
-    ? '<p class="small">Name-identity processing time (RT<sub>name</sub> \u2212 RT<sub>physical</sub>) \u2248 <b>' + (ni - pi) + ' ms</b> \u2014 the classic Posner &amp; Mitchell effect!</p>'
-    : "";
-
-  var allSent = S.sendOk.length > 0 && S.sendOk.every(function (x) { return x; });
-  var noneConfigured = !CONFIG.scriptUrl;
-  var status = noneConfigured
-    ? '<p class="sent-ko">Demo mode: results were not sent (no collection URL is configured).</p>'
-    : allSent
-      ? '<p class="sent-ok">\u2713 Your results have been sent. Thank you!</p>'
-      : '<p class="sent-ko">Sending results failed (network error). Your data remain saved in this browser.</p>';
-
-  renderScreen(
-    '<div class="card">' +
-    '<h1>Thank you for participating!</h1>' +
-    status +
-    '<p class="sub">Your performance (correct trials, in milliseconds):</p>' +
-    '<table class="summary"><tr><th>Block</th><th>Condition</th><th>Mean RT</th><th>Errors</th></tr>' + trs + '</table>' +
-    estimate +
-    '<p class="small">Experiment adapted from Posner, M. I., &amp; Mitchell, R. F. (1967). Chronometric analysis of classification. <i>Psychological Review, 74</i>(5), 392\u2013409.</p>' +
-    '<p class="small">You may close this page.</p>' +
-    '</div>'
-  );
-  advance = null;
+  return v === null ? "-" : v + (suffix || "");
 }
 
 /* ---------- Start ---------- */
