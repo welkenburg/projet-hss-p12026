@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CHRONOMETRIC ANALYSIS OF CLASSIFICATION (Posner &amp; Mitchell, 1967)</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<main id="app">
+  <div id="screen"></div>
+
+  <div id="task" hidden>
+    <div class="topbar"><span id="taskLabel"></span><span id="taskProgress"></span></div>
+    <div class="progress"><div id="barFill"></div></div>
+    <div id="stimArea">
+      <div id="stim"></div>
+      <div id="feedback"></div>
+    </div>
+    <div class="btns">
+      <button id="btnSame" class="resp same" type="button">SAME<span>F Key</span></button>
+      <button id="btnDiff" class="resp diff" type="button">DIFFERENT<span>J Key</span></button>
+    </div>
+  </div>
+
+  <footer>Posner, M. I., & Mitchell, R. F. (1967). Chronometric analysis of classification. Psychological Review, 74(5), 392-409. <a>https://doi.org/10.1037/h0024913</a></footer>
+</main>
+<script src="js/config.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/DOM.js"></script>
+<script src="js/script.js"></script>
+</body>
+</html>

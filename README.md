@@ -1,2 +1,2 @@
 # projet-hss-p12026
-Rendu HSS approche experimentale aux sciences cognitives
+HSS project: an experimental approach to cognitive science.
